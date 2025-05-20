@@ -1,0 +1,66 @@
+{
+    "acoes": [
+        {
+            "nome": "ativar",
+            "objetos": [
+                "luzes de pouso",
+                "piloto automático"
+            ]
+        },
+        {
+            "nome": "desativar",
+            "objetos": [
+                "luzes de pouso",
+                "piloto automático"
+            ]
+        },
+        {
+            "nome": "checar",
+            "objetos": [
+                "nível de combustível"
+            ]
+        }
+    ],
+
+    "modo": [
+        {
+            "nome": "emergência",
+            "acoes": [
+                {
+                    "nome": "ativar",
+                    "objetos": "luzes de emergência"
+                },
+                {
+                    "nome": "checar",
+                    "objetos": "nível de combustível"
+                },
+                {
+                    "nome": "desativar",
+                    "objetos": "piloto automático"
+                }
+
+            ]
+        },
+        {
+            "nome": "segurança",
+            "acoes": [
+                {
+                    "nome": "acionar",
+                    "objetos": "torre de controle"
+                },
+                {
+                    "nome": "acionar",
+                    "objetos": "transponder no modo 7700"
+                },
+                {
+                    "nome": "ativar",
+                    "objetos": "máscaras de oxigênio"
+                },
+                {
+                    "nome": "ativar",
+                    "objetos": "luzes de emergência"
+                }
+            ]
+        }
+    ]
+}

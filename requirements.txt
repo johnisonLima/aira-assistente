@@ -1,0 +1,23 @@
+# Bibliotecas necessárias para inicializar os modelos do projeto de IA em Python
+transformers  # Biblioteca para modelos de linguagem e aprendizado profundo, como BERT e GPT.
+torch         # Biblioteca principal do PyTorch para aprendizado profundo.
+
+# Bibliotecas necessárias para o transcritor o reconhecimento de fala e processamento de áudio
+torchaudio    # Biblioteca para processamento de áudio com PyTorch.
+PySoundFile  # Biblioteca para leitura e escrita de arquivos de áudio.
+
+# Bibliotecas necessárias para o pré-processamento de dados
+pyaudio       # Biblioteca para trabalhar com entrada e saída de áudio.
+
+# Biblioteca necessarias para a etapa de palavvras de parada
+nltk          # Biblioteca para processamento de linguagem natural (PLN).
+
+# Para interface gráfica
+django        # Framework web para desenvolvimento de aplicações robustas em Python.
+flask         # Microframework web para desenvolvimento de aplicações leves em Python.
+
+# pyserial      # Biblioteca para comunicação serial (ex.: com dispositivos via porta serial).
+# pygame        # Biblioteca para desenvolvimento de jogos e multimídia.
+# torchvision # Biblioteca para visão computacional com PyTorch.
+
+# pip3 install -r requirements.txt
