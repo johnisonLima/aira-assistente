@@ -6,13 +6,24 @@ MODELO = "lgris/wav2vec2-large-xlsr-open-brazilian-portuguese-v2"
 
 AUDIOS = [ 
     {
-        "comando": "ligar a lâmpada", 
-        "wav": "E://MEGAsync//projectServ//www//projetos//ia//dev//aira-assistente//audios//ligar lampada.wav"
+        "comando": "ativar luzes de pouso", 
+        "wav": "E://MEGAsync//projectServ//www//projetos//ia//dev//aira-assistente//audios//ativar luzes de pouso.wav"
     },
     {
-        "comando": "desligar a lâmpada", 
-        "wav": "E://MEGAsync//projectServ//www//projetos//ia//dev//aira-assistente//audios//desligar lampada.wav"
-    }
+        "comando": "desativar luzes de pouso", 
+        "wav": "E://MEGAsync//projectServ//www//projetos//ia//dev//aira-assistente//audios//desativar luzes de pouso.wav"
+    },{
+        "comando": "ativar piloto automático",
+        "wav": "E://MEGAsync//projectServ//www//projetos//ia//dev//aira-assistente//audios//ativar piloto automatico.wav" 
+    },
+    {
+        "comando": "desativar piloto automático",
+        "wav": "E://MEGAsync//projectServ//www//projetos//ia//dev//aira-assistente//audios//desativar piloto automatico.wav" 
+    },
+    {
+        "comando": "checar nível de combustível",
+        "wav": "E://MEGAsync//projectServ//www//projetos//ia//dev//aira-assistente//audios//checar nível de combustível.wav" 
+    },
 ]
 
 TAXA_AMOSTRAGEM = 16_000

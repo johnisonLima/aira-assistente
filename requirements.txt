@@ -16,6 +16,9 @@ nltk          # Biblioteca para processamento de linguagem natural (PLN).
 django        # Framework web para desenvolvimento de aplicações robustas em Python.
 flask         # Microframework web para desenvolvimento de aplicações leves em Python.
 
+SpeechRecognition # Biblioteca para reconhecimento de fala em Python.
+pyttsx3      # Biblioteca para conversão de texto em fala (TTS) em Python.
+
 # pyserial      # Biblioteca para comunicação serial (ex.: com dispositivos via porta serial).
 # pygame        # Biblioteca para desenvolvimento de jogos e multimídia.
 # torchvision # Biblioteca para visão computacional com PyTorch.
