@@ -22,7 +22,7 @@
         }
     ],
 
-    "modo": [
+    "modos": [
         {
             "nome": "emergência",
             "acoes": [

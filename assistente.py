@@ -44,7 +44,12 @@ def iniciar():
 
             iniciado = False
 
-    return iniciado, processador, modelo, gravador
+    return iniciado, processador, modelo, gravador, palavras_de_parada, configuracao
+
+def clara_diz(texto):
+    print(texto)
+    engine.say(texto)
+    engine.runAndWait()
 
 def capturar_fala_quando_houver_som(gravador):
     gravacao = gravador.open(format=FORMATO, channels=CANAIS, rate=TAXA_AMOSTRAGEM,
@@ -68,7 +73,7 @@ def capturar_fala_quando_houver_som(gravador):
         gravacao.close()
 
 def capturar_fala_com_silencio(gravador, max_silencio=30):
-    stream = gravador.open(format=FORMATO, channels=CANAIS, rate=TAXA_AMOSTRAGEM,
+    gravacao = gravador.open(format=FORMATO, channels=CANAIS, rate=TAXA_AMOSTRAGEM,
                            input=True, frames_per_buffer=AMOSTRAS)
 
     fala = []
@@ -78,7 +83,7 @@ def capturar_fala_com_silencio(gravador, max_silencio=30):
         # print("Esperando som...")
 
         while True:
-            dados = stream.read(AMOSTRAS, exception_on_overflow=False)
+            dados = gravacao.read(AMOSTRAS, exception_on_overflow=False)
             volume = audioop.rms(dados, 2)
 
             if volume > LIMIAR_VOLUME:
@@ -95,7 +100,7 @@ def capturar_fala_com_silencio(gravador, max_silencio=30):
         return fala
 
     finally:
-        stream.stop_stream()
+        gravacao.stop_stream()
 
 def gravar_fala(fala, gravador):
     gravado, arquivo = False, f"{CAMINHO_AUDIO_FALA}{secrets.token_hex(32)}.wav"
@@ -115,24 +120,45 @@ def gravar_fala(fala, gravador):
         return
     
     return gravado, arquivo
-
-def carregar_fala(caminho_audio):
-    audio, amostragem = torchaudio.load(caminho_audio)
-    if audio.shape[0] > 1:
-        audio = torch.mean(audio, dim=0, keepdim=True)
-
-    adaptador_amostragem = torchaudio.transforms.Resample(amostragem, TAXA_AMOSTRAGEM)
-    audio = adaptador_amostragem(audio)
-
-    return audio.squeeze()
    
-def clara_diz(texto):
-    print(texto)
-    engine.say(texto)
-    engine.runAndWait()
+def remover_palavras_de_parada(transcricao, palavras_de_parada):
+    comando = []
+
+    tokens = word_tokenize(transcricao)
+    for token in tokens:
+        if token not in palavras_de_parada:
+            comando.append(token)
+
+    return comando
+
+def validar_comando(tokens, acoes):
+    tokens_str = " ".join(tokens).lower()
+
+    for acao in acoes:
+        nome_acao = acao["nome"].lower()
+        for objeto in acao["objetos"]:
+            nome_objeto = objeto.lower()
+            
+            frase_completa = f"{nome_acao} {nome_objeto}"
+
+            if frase_completa in tokens_str:
+                return True, nome_acao, nome_objeto
+
+    return False, None, None
+
+def validar_modo(tokens, modos):
+    tokens_str = " ".join(tokens).lower()
+
+    for modo in modos:
+        nome_modo = modo["nome"].lower()
+        if nome_modo in tokens_str:
+            acoes = modo.get("acoes", [])
+            return True, nome_modo, acoes
+
+    return False, None, []
 
 def escutar_comando_ativacao():
-    iniciado, processador, modelo, gravador = iniciar()
+    iniciado, processador, modelo, gravador, palavras_de_parada, configuracao = iniciar()
 
     if iniciado:
         clara_diz("Aguardando palavra de ativação...")
@@ -146,11 +172,49 @@ def escutar_comando_ativacao():
 
                 if gravado:
                     transcricao = transcrever_fala(carregar_fala(arquivo_fala), modelo, processador)
-                    print(f"Você disse: {transcricao}")
-                    os.remove(arquivo_fala)
 
-                    if "oi clara" in transcricao.lower():
-                        clara_diz("Assistente ativada!")                        
+                    print(f"Você disse: {transcricao}")
+
+                    os.remove(arquivo_fala)
+                    
+                    if "amélia" in transcricao.lower():
+                        clara_diz("Assistente ativada!")     
+
+                        fala = capturar_fala_com_silencio(gravador)
+                        gravado, arquivo_fala = gravar_fala(fala, gravador)                   
+
+                        if gravado:
+                            transcricao = transcrever_fala(carregar_fala(arquivo_fala), modelo, processador)
+
+                            comando = remover_palavras_de_parada(transcricao, palavras_de_parada)
+                            print(f"Você disse: {transcricao}")
+                            print(f"comando de voz: {comando}")
+
+                            os.remove(arquivo_fala)
+
+                            acao_valido, acao, objeto = validar_comando(comando, configuracao["acoes"])
+
+                            modo_valido, nome_modo, acoes_do_modo = validar_modo(comando, configuracao["modos"])
+
+                            if acao_valido:
+                                
+                                clara_diz(f"Executando ação: {acao} {objeto}")
+
+                                # Aqui você pode adicionar a lógica para executar a ação correspondente
+                                # Por exemplo, acionar um dispositivo, enviar um comando, etc.
+                            elif modo_valido:
+                                clara_diz(f"Modo {nome_modo} ativado. Executando as seguintes ações:")
+
+                                for acao in acoes_do_modo:
+                                    nome_acao = acao["nome"]
+                                    objeto = acao["objetos"]
+                                    clara_diz(f"{nome_acao} {objeto}")
+
+                                # Aqui você pode adicionar a lógica para ativar o modo correspondente
+                                # Por exemplo, mudar o estado de um dispositivo, alterar configurações, etc.
+                            else:
+                                clara_diz("Desculpa! Não entendi.")
+
                         break
 
             except KeyboardInterrupt:
