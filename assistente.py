@@ -8,6 +8,7 @@ import audioop
 import secrets
 import os
 import json
+import random
 import time
 
 import pyttsx3
@@ -160,66 +161,86 @@ def validar_modo(tokens, modos):
 def escutar_comando_ativacao():
     iniciado, processador, modelo, gravador, palavras_de_parada, configuracao = iniciar()
 
-    if iniciado:
-        clara_diz("Aguardando palavra de ativação...")
-        print("Pressione Ctrl+C para parar.")
+    if not iniciado:
+        return
 
+    clara_diz("Aguardando palavra de ativação...")
+    print("Pressione Ctrl+C para parar.")
+
+    try:
         while True:
-            try:
-                # fala = capturar_fala_quando_houver_som(gravador)
-                fala = capturar_fala_com_silencio(gravador)
-                gravado, arquivo_fala = gravar_fala(fala, gravador)
+            if detectar_ativacao(gravador, modelo, processador):
+                while True:
+                    processar_comando_usuario(gravador, modelo, processador, palavras_de_parada, configuracao)
+                    # clara_diz("Aguardando próximo comando...")  
+    except KeyboardInterrupt:
+        print("Interrompido pelo usuário.")
 
-                if gravado:
-                    transcricao = transcrever_fala(carregar_fala(arquivo_fala), modelo, processador)
+def detectar_ativacao(gravador, modelo, processador):
+    fala = capturar_fala_com_silencio(gravador)
+    gravado, arquivo_fala = gravar_fala(fala, gravador)
 
-                    print(f"Você disse: {transcricao}")
+    if not gravado:
+        return False
 
-                    os.remove(arquivo_fala)
-                    
-                    if "amélia" in transcricao.lower():
-                        clara_diz("Assistente ativada!")     
+    transcricao = transcrever_fala(carregar_fala(arquivo_fala), modelo, processador)
+    print(f"Você disse: {transcricao}")
+    os.remove(arquivo_fala)
 
-                        fala = capturar_fala_com_silencio(gravador)
-                        gravado, arquivo_fala = gravar_fala(fala, gravador)                   
+    if "amélia" in transcricao.lower():
+        clara_diz("Assistente ativada!")
+        return True
+    
+    return False
 
-                        if gravado:
-                            transcricao = transcrever_fala(carregar_fala(arquivo_fala), modelo, processador)
+def responder_execucao_invalida(configuracao):
+    respostas = configuracao.get("execucao_invalida", [])
+    if respostas:
+        resposta_escolhida = random.choice(respostas)
+        return resposta_escolhida["resposta"]
+    
+    return "Desculpe, não entendi."
 
-                            comando = remover_palavras_de_parada(transcricao, palavras_de_parada)
-                            print(f"Você disse: {transcricao}")
-                            print(f"comando de voz: {comando}")
+def processar_comando_usuario(gravador, modelo, processador, palavras_de_parada, configuracao):
+    fala = capturar_fala_com_silencio(gravador)
 
-                            os.remove(arquivo_fala)
+    gravado, arquivo_fala = gravar_fala(fala, gravador)
 
-                            acao_valido, acao, objeto = validar_comando(comando, configuracao["acoes"])
+    if not gravado:
+        return
 
-                            modo_valido, nome_modo, acoes_do_modo = validar_modo(comando, configuracao["modos"])
+    transcricao = transcrever_fala(carregar_fala(arquivo_fala), modelo, processador)
+    comando = remover_palavras_de_parada(transcricao, palavras_de_parada)
 
-                            if acao_valido:
-                                
-                                clara_diz(f"Executando ação: {acao} {objeto}")
+    print(f"Você disse: {transcricao}")
+    print(f"Comando de voz: {comando}")
+    os.remove(arquivo_fala)
 
-                                # Aqui você pode adicionar a lógica para executar a ação correspondente
-                                # Por exemplo, acionar um dispositivo, enviar um comando, etc.
-                            elif modo_valido:
-                                clara_diz(f"Modo {nome_modo} ativado. Executando as seguintes ações:")
+    executar_acao_ou_modo(comando, configuracao)
 
-                                for acao in acoes_do_modo:
-                                    nome_acao = acao["nome"]
-                                    objeto = acao["objetos"]
-                                    clara_diz(f"{nome_acao} {objeto}")
+    # if "cancelar" in transcricao.lower() or "desativar assistente" in transcricao.lower():
+    #     clara_diz("Assistente desativada.")
+    #     raise KeyboardInterrupt  # ou return um sinal para sair
 
-                                # Aqui você pode adicionar a lógica para ativar o modo correspondente
-                                # Por exemplo, mudar o estado de um dispositivo, alterar configurações, etc.
-                            else:
-                                clara_diz("Desculpa! Não entendi.")
+def executar_acao_ou_modo(comando, configuracao):
+    acao_valido, acao, objeto = validar_comando(comando, configuracao["acoes"])
 
-                        break
+    modo_valido, nome_modo, acoes_do_modo = validar_modo(comando, configuracao["modos"])
 
-            except KeyboardInterrupt:
-                print("Interrompido pelo usuário.")
-                break
+    if acao_valido:
+        clara_diz(f"Executando ação: {acao} {objeto}")
+        # Adicione aqui a execução real da ação
+
+    elif modo_valido:
+        clara_diz(f"Modo {nome_modo} ativado. Executando as seguintes ações:")
+        for acao in acoes_do_modo:
+            nome_acao = acao["nome"]
+            objeto = acao["objetos"]
+            clara_diz(f"{nome_acao} {objeto}")
+        # Adicione aqui a execução real do modo
+
+    else:
+       clara_diz(responder_execucao_invalida(configuracao))
 
 if __name__ == "__main__":    
     escutar_comando_ativacao()

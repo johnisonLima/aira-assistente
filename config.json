@@ -62,5 +62,29 @@
                 }
             ]
         }
+    ],
+
+    "execucao_invalida": [
+        {
+            "resposta": "Você pode repetir, por favor?"
+        },
+        {
+            "resposta": "Desculpe, não entendi o que você disse."
+        },
+        {
+            "resposta": "Poderia reformular sua solicitação?"
+        },
+        {
+            "resposta": "Não consegui compreender. Poderia tentar novamente?"
+        },
+        {
+            "resposta": "Desculpe, não consegui entender sua solicitação."
+        },
+        {
+            "resposta": "Poderia repetir sua solicitação?"
+        },
+        {
+            "resposta": "Desculpe, não consegui entender o que você disse."
+        }
     ]
 }
