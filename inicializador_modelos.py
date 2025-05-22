@@ -1,9 +1,11 @@
+import torch
+
 from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
 
-MODELOS = ["lgris/wav2vec2-large-xlsr-open-brazilian-portuguese-v2"]
-
-def iniciar_modelo(nome_modelo, dispositivo = "cpu"):
+def iniciar_modelo(nome_modelo):
     iniciado, processador, modelo = False, None, None
+
+    dispositivo = "cuda:0" if torch.cuda.is_available() else "cpu"
 
     print(f"iniciando modelo: {nome_modelo}")
 
@@ -18,7 +20,9 @@ def iniciar_modelo(nome_modelo, dispositivo = "cpu"):
     return iniciado, processador, modelo
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":    
+    MODELOS = ["lgris/wav2vec2-large-xlsr-open-brazilian-portuguese-v2"]
+
     for modelo in MODELOS:
         iniciado,_,__ = iniciar_modelo(modelo)
         if iniciado:

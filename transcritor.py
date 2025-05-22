@@ -3,6 +3,7 @@ import torchaudio
 import torch
 
 MODELO = "lgris/wav2vec2-large-xlsr-open-brazilian-portuguese-v2"
+TAXA_AMOSTRAGEM = 16_000
 
 AUDIOS = [ 
     {
@@ -26,8 +27,6 @@ AUDIOS = [
     },
 ]
 
-TAXA_AMOSTRAGEM = 16_000
-
 def carregar_fala(caminho_audio):
     audio, amostragem = torchaudio.load(caminho_audio)
 
@@ -40,7 +39,9 @@ def carregar_fala(caminho_audio):
 
     return audio.squeeze()
 
-def transcrever_fala(fala, modelo, processador, dispositivo="cpu"):
+def transcrever_fala(fala, modelo, processador):
+    dispositivo = "cuda:0" if torch.cuda.is_available() else "cpu"
+
     resultado = processador(fala, return_tensors="pt", sampling_rate=TAXA_AMOSTRAGEM).input_values.to(dispositivo)
 
     resultado = modelo(resultado).logits
@@ -51,9 +52,9 @@ def transcrever_fala(fala, modelo, processador, dispositivo="cpu"):
     return transcricao.lower()
 
 if __name__ == "__main__": 
-    dispositivo = "cuda:0" if torch.cuda.is_available() else "cpu"
+    
 
-    iniciado, processador, modelo =  iniciar_modelo(MODELO, dispositivo)
+    iniciado, processador, modelo =  iniciar_modelo(MODELO)
 
     if iniciado:
         for audio in AUDIOS:
@@ -64,7 +65,7 @@ if __name__ == "__main__":
             except Exception as e:
                 print(f"Erro ao carregar áudio: {e}")
 
-            transcricao = transcrever_fala(fala, modelo, processador, dispositivo)
+            transcricao = transcrever_fala(fala, modelo, processador)
 
             print(f"transcrição: {transcricao}")
             assert audio['comando'] == transcricao
