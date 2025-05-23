@@ -4,7 +4,7 @@ from nltk import word_tokenize, corpus
 
 import pyaudio
 import wave
-import audioop
+import numpy as np
 import secrets
 import os
 import json
@@ -52,6 +52,21 @@ def clara_diz(texto):
     engine.say(texto)
     engine.runAndWait()
 
+def calcular_rms(dados):
+    if not dados:
+        return 0.0
+
+    audio_array = np.frombuffer(dados, dtype=np.int16)
+
+    if audio_array.size == 0:
+        return 0.0
+    
+    audio_array = audio_array.astype(np.float32)
+
+    rms = np.sqrt(np.mean(audio_array ** 2))
+
+    return rms
+
 def capturar_fala_quando_houver_som(gravador):
     gravacao = gravador.open(format=FORMATO, channels=CANAIS, rate=TAXA_AMOSTRAGEM,
                            input=True, frames_per_buffer=AMOSTRAS)
@@ -59,7 +74,8 @@ def capturar_fala_quando_houver_som(gravador):
     try:
         while True:
             dados = gravacao.read(AMOSTRAS, exception_on_overflow=False)
-            volume = audioop.rms(dados, 2)
+            volume = calcular_rms(dados)
+
 
             if volume > LIMIAR_VOLUME:
                 # print("Som detectado! Gravando...")
@@ -85,7 +101,8 @@ def capturar_fala_com_silencio(gravador, max_silencio=30):
 
         while True:
             dados = gravacao.read(AMOSTRAS, exception_on_overflow=False)
-            volume = audioop.rms(dados, 2)
+            volume = calcular_rms(dados)
+
 
             if volume > LIMIAR_VOLUME:
                 fala.append(dados)
@@ -220,10 +237,6 @@ def processar_comando_usuario(gravador, modelo, processador, palavras_de_parada,
     os.remove(arquivo_fala)
 
     executar_acao_ou_modo(comando, configuracao)
-
-    # if "cancelar" in transcricao.lower() or "desativar assistente" in transcricao.lower():
-    #     clara_diz("Assistente desativada.")
-    #     raise KeyboardInterrupt  # ou return um sinal para sair
 
 def executar_acao_ou_modo(comando, configuracao):
     acao_valido, acao, objeto = validar_comando(comando, configuracao["acoes"])

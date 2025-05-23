@@ -18,6 +18,7 @@ flask         # Microframework web para desenvolvimento de aplicações leves em
 
 SpeechRecognition # Biblioteca para reconhecimento de fala em Python.
 pyttsx3      # Biblioteca para conversão de texto em fala (TTS) em Python.
+numpy        # Biblioteca para computação numérica em Python, especialmente com arrays e matrizes.
 
 # pyserial      # Biblioteca para comunicação serial (ex.: com dispositivos via porta serial).
 # pygame        # Biblioteca para desenvolvimento de jogos e multimídia.
