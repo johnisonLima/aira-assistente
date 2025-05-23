@@ -169,15 +169,18 @@ def escutar_comando_ativacao():
 
     try:
         while True:
-            if detectar_ativacao(gravador, modelo, processador):
+            if detectar_ativacao(gravador, modelo, processador, configuracao):
                 while True:
                     processar_comando_usuario(gravador, modelo, processador, palavras_de_parada, configuracao)
                     # clara_diz("Aguardando próximo comando...")  
     except KeyboardInterrupt:
         print("Interrompido pelo usuário.")
 
-def detectar_ativacao(gravador, modelo, processador):
+def detectar_ativacao(gravador, modelo, processador, configuracao):
     fala = capturar_fala_com_silencio(gravador)
+
+    ativar_assistente = configuracao["ativar_assistente"]
+
     gravado, arquivo_fala = gravar_fala(fala, gravador)
 
     if not gravado:
@@ -187,7 +190,7 @@ def detectar_ativacao(gravador, modelo, processador):
     print(f"Você disse: {transcricao}")
     os.remove(arquivo_fala)
 
-    if "amélia" in transcricao.lower():
+    if ativar_assistente in transcricao.lower():
         clara_diz("Assistente ativada!")
         return True
     
@@ -238,7 +241,6 @@ def executar_acao_ou_modo(comando, configuracao):
             objeto = acao["objetos"]
             clara_diz(f"{nome_acao} {objeto}")
         # Adicione aqui a execução real do modo
-
     else:
        clara_diz(responder_execucao_invalida(configuracao))
 

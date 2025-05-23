@@ -11,7 +11,8 @@
             "nome": "desativar",
             "objetos": [
                 "luzes de pouso",
-                "piloto automático"
+                "piloto automático",
+                "assistente"
             ]
         },
         {
@@ -63,6 +64,8 @@
             ]
         }
     ],
+
+    "ativar_assistente": "amélia",
 
     "execucao_invalida": [
         {
