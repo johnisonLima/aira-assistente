@@ -1,6 +1,7 @@
 from inicializador_modelos import *
 from transcritor import *
 from nltk import word_tokenize, corpus
+from threading import Thread
 
 import pyaudio
 import wave
@@ -12,6 +13,9 @@ import random
 import time
 
 import pyttsx3
+
+from dispositivos import luzes_puoso
+from dispositivos import piloto_automatico
 
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
@@ -238,14 +242,34 @@ def processar_comando_usuario(gravador, modelo, processador, palavras_de_parada,
 
     executar_acao_ou_modo(comando, configuracao)
 
+def atuar(acao, objeto, atuadores):
+    clara_diz(f"Executando ação: {acao} {objeto}")
+
+    for atuador in atuadores:
+        atuacao = Thread(target=atuador["atuacao"], args=[acao, objeto])
+        atuacao.start()
+
+def configurar_atuadores():
+    atuadores = []
+
+    atuadores.append({
+        "nome": "luzes",
+        "atuacao": luzes_puoso.atuar
+    })
+    atuadores.append({
+        "nome": "piloto automático",
+        "atuacao": piloto_automatico.atuar
+    })
+
+    return atuadores
+
 def executar_acao_ou_modo(comando, configuracao):
     acao_valido, acao, objeto = validar_comando(comando, configuracao["acoes"])
 
     modo_valido, nome_modo, acoes_do_modo = validar_modo(comando, configuracao["modos"])
 
     if acao_valido:
-        clara_diz(f"Executando ação: {acao} {objeto}")
-        # Adicione aqui a execução real da ação
+        atuar(acao, objeto, configurar_atuadores())
 
     elif modo_valido:
         clara_diz(f"Modo {nome_modo} ativado. Executando as seguintes ações:")
