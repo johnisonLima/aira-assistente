@@ -10,7 +10,6 @@ import secrets
 import os
 import json
 import random
-import time
 import re
 
 import pyttsx3
@@ -53,7 +52,7 @@ def iniciar():
 
                 arquivo.close()
         except Exception as e:
-            print(f"erro carregando a configuração: {str(e)}")
+            print(f"Erro carregando a configuração: {str(e)}")
 
             iniciado = False
 
@@ -86,7 +85,6 @@ def capturar_fala_quando_houver_som(gravador):
         while True:
             dados = gravacao.read(AMOSTRAS, exception_on_overflow=False)
             volume = obter_intensidade_audio(dados)
-
 
             if volume > LIMIAR_VOLUME:
                 # print("Som detectado! Gravando...")
@@ -242,8 +240,10 @@ def processar_comando_usuario(gravador, modelo, processador, palavras_de_parada,
 
     if not gravado:
         return
+    
+    carregar_audio_processado = carregar_fala(arquivo_fala)
 
-    transcricao = transcrever_fala(carregar_fala(arquivo_fala), modelo, processador)
+    transcricao = transcrever_fala(carregar_audio_processado, modelo, processador)
     comando = remover_palavras_de_parada(transcricao, palavras_de_parada)
 
     print(f"Você disse: {transcricao}")
