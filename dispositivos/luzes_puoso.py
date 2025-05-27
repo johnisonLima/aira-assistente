@@ -1,8 +1,13 @@
+from time import sleep
+
 def atuar(comando, objeto):
+    sucesso = False
+
     print("verificando se é um comando para as luzes de pouso")
 
-    if objeto in ["luzes de pouso"]:
-        print(f"{comando.capitalize()} {objeto}")
-        return True
+    sleep(2)
     
-    return False
+    if comando in ["ativar", "desativar", "ligar", "desligar"] and objeto == "luzes de pouso":        
+        sucesso = True
+
+    return sucesso

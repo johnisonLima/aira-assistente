@@ -1,7 +1,13 @@
-def atuar(comando, objeto):
+from time import sleep
 
-    
-    if comando == "checar" and objeto == "nível de combustível":
-        print("Checando nível de combustível...")
-        return True
-    return False
+def atuar(comando, objeto):
+    print("verificando se é um comando para o combustível")
+
+    sleep(2)
+
+    sucesso = False
+
+    if comando in ["checar nível de", "verificar nível de"] and objeto == "combustível":        
+        sucesso = True
+
+    return sucesso

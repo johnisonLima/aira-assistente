@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assistente de Voo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #001f3f, #0074d9);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .controls button {
+      flex: 1;
+      padding: 12px;
+      background-color: #0074d9;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .controls button:hover {
+      background-color: #005fa3;
+    }
+
+    .display {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      min-height: 60px;
+      font-size: 1.1rem;
+    }
+
+    .other-controls {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .other-controls button {
+      flex: 1 1 45%;
+      padding: 10px;
+      font-size: 0.9rem;
+      background-color: #39CCCC;
+      color: black;
+      border: none;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+
+    .other-controls button:hover {
+      background-color: #2ab7b7;
+    }
+
+    @media(max-width: 400px) {
+      .controls, .other-controls {
+        flex-direction: column;
+      }
+
+      .other-controls button {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Assistente Virtual de Bordo</h1>
+    <div class="controls">
+      <button id="powerBtn">🔌 Ligar</button>
+      <button id="listenBtn" disabled>🎙️ Ouvir Comando</button>
+    </div>
+    <div class="display" id="assistantOutput">
+      Assistente desligada.
+    </div>
+
+    <div class="other-controls">
+      <button>💡 Luz da Cabine</button>
+      <button>☕ Pedido de Bebida</button>
+      <button>📞 Chamar Comissário</button>
+      <button>🎬 Entretenimento</button>
+    </div>
+  </div>
+
+  <script>
+    const powerBtn = document.getElementById('powerBtn');
+    const listenBtn = document.getElementById('listenBtn');
+    const output = document.getElementById('assistantOutput');
+
+    let poweredOn = false;
+
+    powerBtn.addEventListener('click', () => {
+      poweredOn = !poweredOn;
+      if (poweredOn) {
+        powerBtn.textContent = '🔴 Desligar';
+        listenBtn.disabled = false;
+        output.textContent = 'Assistente pronta para comandos.';
+      } else {
+        powerBtn.textContent = '🔌 Ligar';
+        listenBtn.disabled = true;
+        output.textContent = 'Assistente desligada.';
+      }
+    });
+
+    listenBtn.addEventListener('click', () => {
+      if (!poweredOn) return;
+
+      output.textContent = 'Ouvindo comando de voz...';
+
+      // Simulação de "fala" da assistente
+      setTimeout(() => {
+        const respostas = [
+          "Comando recebido: Ajustando iluminação.",
+          "Chamando comissário...",
+          "Reproduzindo entretenimento a bordo.",
+          "Serviço de bordo ativado.",
+          "Temperatura ajustada para 22ºC."
+        ];
+        const respostaAleatoria = respostas[Math.floor(Math.random() * respostas.length)];
+        output.textContent = respostaAleatoria;
+      }, 2000);
+    });
+  </script>
+</body>
+</html>

@@ -4,36 +4,69 @@
             "nome": "ativar",
             "objetos": [
                 "luzes de pouso",
-                "piloto automático"
+                "luzes de emergência",
+                "piloto automático",
+                "transponder"
             ]
         },
         {
             "nome": "desativar",
             "objetos": [
                 "luzes de pouso",
+                "luzes de emergência",
                 "piloto automático",
                 "assistente"
             ]
         },
         {
-            "nome": "checar",
+            "nome": "ligar",
             "objetos": [
-                "nível de combustível"
+                "luzes de pouso",
+                "luzes de emergência",
+                "piloto automático"
+            ]
+        },
+        {
+            "nome": "desligar",
+            "objetos": [
+                "luzes de pouso",
+                "luzes de emergência",
+                "piloto automático",
+                "assistente"
+            ]
+        },        
+        {
+            "nome": "verificar nível de",
+            "objetos": [
+                "combustível"
+            ]
+        },
+        {
+            "nome": "checar nível de",
+            "objetos": [
+                "combustível"
+            ]
+        },
+        {
+            "nome": "acionar",
+            "objetos": [
+                "torre de controle",
+                "transponder"
             ]
         }
     ],
 
     "modos": [
         {
-            "nome": "emergência",
+            "nome": "modo emergência",
             "acoes": [
                 {
                     "nome": "ativar",
                     "objetos": "luzes de emergência"
                 },
                 {
-                    "nome": "checar",
-                    "objetos": "nível de combustível"
+                    "nome": "verificar nível de",
+                    "objetos": "combustível"
                 },
                 {
                     "nome": "desativar",
@@ -43,19 +76,15 @@
             ]
         },
         {
-            "nome": "segurança",
+            "nome": "modo segurança",
             "acoes": [
                 {
                     "nome": "acionar",
                     "objetos": "torre de controle"
                 },
                 {
-                    "nome": "acionar",
-                    "objetos": "transponder no modo 7700"
-                },
-                {
                     "nome": "ativar",
-                    "objetos": "máscaras de oxigênio"
+                    "objetos": "transponder"
                 },
                 {
                     "nome": "ativar",

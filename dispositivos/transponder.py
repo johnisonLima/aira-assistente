@@ -1,5 +1,13 @@
+from time import sleep
+
 def atuar(comando, objeto):
-    if objeto == "transponder no modo 7700":
-        print(f"{comando.capitalize()} {objeto}")
-        return True
-    return False
+    sucesso = False
+
+    print("verificando se é um comando para o transponder")
+
+    sleep(2)
+    
+    if comando in ["ativar"] and objeto == "transponder":        
+        sucesso = True
+
+    return sucesso
