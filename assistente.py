@@ -58,7 +58,7 @@ def iniciar():
 
     return iniciado, processador, modelo, gravador, palavras_de_parada, configuracao
 
-def clara_diz(texto):
+def amelia_diz(texto):
     print(texto)
     engine.say(texto)
     engine.runAndWait()
@@ -98,7 +98,7 @@ def capturar_fala_quando_houver_som(gravador):
         gravacao.stop_stream()
         gravacao.close()
 
-def capturar_fala_com_silencio(gravador, max_silencio=30):
+def capturar_fala_com_silencio(gravador, max_silencio=10):
     gravacao = gravador.open(format=FORMATO, channels=CANAIS, rate=TAXA_AMOSTRAGEM, input=True, frames_per_buffer=AMOSTRAS)
 
     fala = []
@@ -133,15 +133,24 @@ def escutar_comando_ativacao():
     if not iniciado:
         return
 
-    clara_diz("Aguardando palavra de ativação...")
+    amelia_diz("Aguardando palavra de ativação...")
     print("Pressione Ctrl+C para parar.")
 
     try:
         while True:
             if detectar_ativacao(gravador, modelo, processador, configuracao):
                 while True:
-                    processar_comando_usuario(gravador, modelo, processador, palavras_de_parada, configuracao)
-                    # clara_diz("Aguardando próximo comando...")  
+                    resultado = processar_comando_usuario(
+                        gravador, modelo, processador, palavras_de_parada, configuracao
+                    )
+
+                    if resultado == "comando_valido":
+                        break
+                    elif resultado == "tempo_limite":
+                        amelia_diz("Nenhuma fala detectada. Voltando para o modo de espera.")
+                        break
+                    else:
+                        amelia_diz(responder_execucao_invalida(configuracao))
     except KeyboardInterrupt:
         print("Interrompido pelo usuário.")
 
@@ -161,7 +170,7 @@ def detectar_ativacao(gravador, modelo, processador, configuracao):
     os.remove(arquivo_fala)
 
     if ativar_assistente in transcricao.lower():
-        clara_diz("Assistente ativada!")
+        amelia_diz("Assistente ativada!")
         return True
     
     return False
@@ -236,21 +245,27 @@ def responder_execucao_invalida(configuracao):
 def processar_comando_usuario(gravador, modelo, processador, palavras_de_parada, configuracao):
     fala = capturar_fala_com_silencio(gravador)
 
+    if not fala:
+        return "tempo_limite"
+
     gravado, arquivo_fala = gravar_fala(fala, gravador)
 
     if not gravado:
-        return
-    
-    carregar_audio_processado = carregar_fala(arquivo_fala)
+        return "tempo_limite"
 
+    carregar_audio_processado = carregar_fala(arquivo_fala)
     transcricao = transcrever_fala(carregar_audio_processado, modelo, processador)
+    os.remove(arquivo_fala)
+
     comando = remover_palavras_de_parada(transcricao, palavras_de_parada)
 
     print(f"Você disse: {transcricao}")
     print(f"Comando de voz: {comando}")
-    os.remove(arquivo_fala)
 
-    executar_acao_ou_modo(comando, configuracao)
+    if executar_acao_ou_modo(comando, configuracao):
+        return "comando_valido"
+    else:
+        return "comando_invalido"
 
 def executar_atividade(acao, objeto, atuadores):   
     for atuador in atuadores:
@@ -261,18 +276,6 @@ def configurar_atuadores():
     atuadores = []
 
     atuadores.append({
-        "nome": "luzes de puoso",
-        "atuacao": luzes_puoso.atuar
-    })
-    atuadores.append({
-        "nome": "luzes de emergência",
-        "atuacao": luzes_emergencia.atuar
-    })
-    atuadores.append({
-        "nome": "piloto automático",
-        "atuacao": piloto_automatico.atuar
-    })
-    atuadores.append({
         "nome": "assistente",
         "atuacao": assistente.atuar
     })
@@ -280,6 +283,18 @@ def configurar_atuadores():
         "nome": "combustível",
         "atuacao": combustivel.atuar
     })    
+    atuadores.append({
+        "nome": "luzes de emergência",
+        "atuacao": luzes_emergencia.atuar
+    })
+    atuadores.append({
+        "nome": "luzes de puoso",
+        "atuacao": luzes_puoso.atuar
+    })
+    atuadores.append({
+        "nome": "piloto automático",
+        "atuacao": piloto_automatico.atuar
+    })
     atuadores.append({
         "nome": "torre de controle",
         "atuacao": torre_de_controle.atuar
@@ -292,23 +307,25 @@ def configurar_atuadores():
 
 def executar_acao_ou_modo(comando, configuracao):
     atuadores = configurar_atuadores()
-    
-    acao_valido, acao, objeto = validar_comando(comando, configuracao["acoes"])
 
+    acao_valido, acao, objeto = validar_comando(comando, configuracao["acoes"])
     modo_valido, nome_modo, acoes_do_modo = validar_modo(comando, configuracao["modos"])
 
     if acao_valido:
-        clara_diz(f"Executando ação: {acao} {objeto}")
+        amelia_diz(f"Executando ação: {acao} {objeto}")
         executar_atividade(acao, objeto, atuadores)
+        return True
 
     elif modo_valido:
-        clara_diz(f"{nome_modo} ativado. Executando as seguintes ações:")
+        amelia_diz(f"{nome_modo} ativado. Executando as seguintes ações:")
         for acao in acoes_do_modo:
             nome_acao = acao["nome"]
             objeto = acao["objetos"]
-            clara_diz(f"{nome_acao} {objeto}")
-    else:
-       clara_diz(responder_execucao_invalida(configuracao))
+            amelia_diz(f"{nome_acao} {objeto}")
+        return True
+
+    else:   
+        return False
 
 if __name__ == "__main__":    
     escutar_comando_ativacao()
