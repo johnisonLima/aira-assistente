@@ -205,42 +205,81 @@ class TesteTranscricao(unittest.TestCase):
 
 class TesteValidacaoComando(TesteTranscricao):
 
-    def testar_validacao_acionar_torre(self):
-        super().testar_transcricao_acionar_torre()
-        
-        comando = remover_palavras_de_parada(self.transcricao, self.palavras_de_parada)
+    def validar_comando_transcrito(self, fala_constante, transcricao_esperada):
+        fala = carregar_fala(fala_constante)
+        self.assertIsNotNone(fala)
+
+        transcricao = transcrever_fala(fala, self.modelo, self.processador)
+        self.assertIsNotNone(transcricao)
+        self.assertEqual(transcricao_esperada, transcricao)
+
+        comando = remover_palavras_de_parada(transcricao, self.palavras_de_parada)
         valido, _, _ = validar_comando(comando, self.configuracao["acoes"])
         self.assertTrue(valido)
 
-#     def testar_validacao_acionar_transponder(self):
-#         super().testar_transcricao_acionar_transponder()
-#         comando = remover_palavras_de_parada(self.transcricao, self.palavras_de_parada)
-#         valido, _, _ = validar_comando(comando, self.configuracao["acoes"])
-#         self.assertTrue(valido)
+    def testar_validacao_acionar_torre(self):
+        self.validar_comando_transcrito(ACIONAR_TORRE, "acionar torre de controle")
 
-#     def testar_validacao_ativar_luzes_emergencia(self):
-#         super().testar_transcricao_ativar_luzes_emergencia()
-#         comando = remover_palavras_de_parada(self.transcricao, self.palavras_de_parada)
-#         valido, _, _ = validar_comando(comando, self.configuracao["acoes"])
-#         self.assertTrue(valido)
+    def testar_transcricao_acionar_transbonder(self):
+        self.validar_comando_transcrito(ACIONAR_TRANSPONDER, "acionar transponder")
 
-#     def testar_validacao_desligar_luzes_pouso(self):
-#         super().testar_transcricao_desligar_luzes_pouso()
-#         comando = remover_palavras_de_parada(self.transcricao, self.palavras_de_parada)
-#         valido, _, _ = validar_comando(comando, self.configuracao["acoes"])
-#         self.assertTrue(valido)
+    def testar_transcricao_ativar_luzes_emergencia(self):
+        self.validar_comando_transcrito(ATIVAR_LUZES_EMERGENCIA, "ativar luzes de emergência")
 
-#     def testar_validacao_modo_emergencia(self):
-#         super().testar_transcricao_modo_emergencia()
-#         comando = remover_palavras_de_parada(self.transcricao, self.palavras_de_parada)
-#         valido, _, _ = validar_comando(comando, self.configuracao["acoes"])
-#         self.assertTrue(valido)
+    def testar_transcricao_ativar_luzes_pouso(self):
+        self.validar_comando_transcrito(ATIVAR_LUZES_POUSO, "ativar luzes de pouso")
 
-#     def testar_validacao_verificar_combustivel(self):
-#         super().testar_transcricao_verificar_combustivel()
-#         comando = remover_palavras_de_parada(self.transcricao, self.palavras_de_parada)
-#         valido, _, _ = validar_comando(comando, self.configuracao["acoes"])
-        # self.assertTrue(valido)
+    def testar_transcricao_ativar_piloto_automatico(self):
+        self.validar_comando_transcrito(ATIVAR_PILOTO_AUTOMATICO, "ativar piloto automático")
+    
+    def testar_transcricao_ativar_transponder(self):
+        self.validar_comando_transcrito(ATIVAR_TRANSPONDER, "ativar transponder")
+
+    def testar_transcricao_checar_nivel_combustivel(self):
+        self.validar_comando_transcrito(CHECAR_NIVEL_COMBUSTIVEL, "checar nível de combustível")
+
+    def testar_transcricao_desativar_assistente(self):
+        self.validar_comando_transcrito(DESATIVAR_ASSISTENTE, "desativar assistente")
+
+    def testar_transcricao_desativar_luzes_emergencia(self):
+        self.validar_comando_transcrito(DESATIVAR_LUZES_EMERGENCIA, "desativar luzes de emergência")
+
+    def testar_transcricao_desativar_luzes_pouso(self):
+        self.validar_comando_transcrito(DESATIVAR_LUZES_POUSO, "desativar luzes de pouso")
+
+    def testar_transcricao_desativar_piloto_automatico(self):
+        self.validar_comando_transcrito(DESATIVAR_PILOTO_AUTOMATICO, "desativar piloto automático")
+
+    def testar_transcricao_desligar_assistente(self):
+        self.validar_comando_transcrito(DESLIGAR_ASSISTENTE, "desligar assistente")
+
+    def testar_transcricao_desligar_luzes_pouso(self):
+        self.validar_comando_transcrito(DESLIGAR_LUZES_POUSO, "desligar luzes de pouso")
+
+    def testar_transcricao_desligar_luzes_emergencia(self):
+        self.validar_comando_transcrito(DESLIGAR_LUZES_EMERGENCIA, "desligar luzes de emergência")
+
+    def testar_transcricao_desligar_piloto_automatico(self):
+        self.validar_comando_transcrito(DESLIGAR_PILOTO_AUTOMATICO, "desligar piloto automático")
+
+    def testar_transcricao_ligar_luzes_emergencia(self):
+        self.validar_comando_transcrito(LIGAR_LUZES_EMERGENCIA, "ligar luzes de emergência")
+
+    def testar_transcricao_ligar_luzes_pouso(self):
+        self.validar_comando_transcrito(LIGAR_LUZES_POUSO, "ligar luzes de pouso")
+
+    def testar_transcricao_ligar_piloto_automatico(self):
+        self.validar_comando_transcrito(LIGAR_PILOTO_AUTOMATICO, "ligar piloto automático")
+
+    def testar_transcricao_modo_emergencia(self):
+        self.validar_comando_transcrito(MODO_EMERGENCIA, "modo emergência")
+
+    def testar_transcricao_modo_seguranca(self):
+        self.validar_comando_transcrito(MODO_SEGURANCA, "modo segurança")
+
+    def testar_transcricao_verificar_combustivel(self):
+        self.validar_comando_transcrito(VERIFICAR_COMBUSTIVEL, "verificar nível de combustível")
+
 
 if __name__ == "__main__":
     unittest.main()
