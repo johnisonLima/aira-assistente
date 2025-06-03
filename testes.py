@@ -4,6 +4,7 @@ from assistente import *
 
 CAMINHO_AUDIO = "E://MEGAsync//projectServ//www//projetos//ia//dev//aira-assistente//audios//"
 
+AMELIA = f"{CAMINHO_AUDIO}amelia.wav"
 ACIONAR_TORRE = f"{CAMINHO_AUDIO}acionar torre de controle.wav"
 ACIONAR_TRANSPONDER = f"{CAMINHO_AUDIO}acionar transponder.wav"
 ATIVAR_LUZES_EMERGENCIA = f"{CAMINHO_AUDIO}ativar luzes de emergencia.wav"
@@ -51,6 +52,9 @@ class TesteTranscricao(BaseTeste):
         transcricao = transcrever_fala(fala, self.modelo, self.processador)
         self.assertIsNotNone(transcricao)
         self.assertEqual(texto_esperado, transcricao)
+    
+    def testar_transcricao_acionar_torre(self):
+        self.validar_transcricao(AMELIA, "amélia")
 
     def testar_transcricao_acionar_torre(self):
         self.validar_transcricao(ACIONAR_TORRE, "acionar torre de controle")
