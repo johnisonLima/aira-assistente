@@ -34,7 +34,7 @@ AUDIOS = [
     },    
     {
         "comando": "checar nível de combustível",
-        "wav": f"{CAMINHO_AUDIO}checar nível de combustível.wav" 
+        "wav": f"{CAMINHO_AUDIO}checar nivel de combustivel.wav" 
     },
     {
         "comando": "desativar assistente",
