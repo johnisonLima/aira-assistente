@@ -12,8 +12,6 @@ import json
 import random
 import re
 
-import pyttsx3
-
 from dispositivos import luzes_puoso
 from dispositivos import luzes_emergencia
 from dispositivos import piloto_automatico
@@ -21,10 +19,6 @@ from dispositivos import assistente
 from dispositivos import combustivel
 from dispositivos import torre_de_controle
 from dispositivos import transponder
-
-engine = pyttsx3.init()
-voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[0].id)  
 
 CAMINHO_AUDIO_FALA = "temp/"
 CONFIG = "config.json"
@@ -60,8 +54,6 @@ def iniciar():
 
 def amelia_diz(texto):
     print(texto)
-    engine.say(texto)
-    engine.runAndWait()
 
 def obter_intensidade_audio(dados):
     if not dados:
@@ -321,6 +313,7 @@ def executar_acao_ou_modo(comando, configuracao):
         for acao in acoes_do_modo:
             nome_acao = acao["nome"]
             objeto = acao["objetos"]
+            executar_atividade(nome_acao, objeto, atuadores)
             amelia_diz(f"{nome_acao} {objeto}")
         return True
 
