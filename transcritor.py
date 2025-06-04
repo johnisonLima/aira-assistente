@@ -5,7 +5,7 @@ import torch
 MODELO = "lgris/wav2vec2-large-xlsr-open-brazilian-portuguese-v2"
 TAXA_AMOSTRAGEM = 16_000
 
-CAMINHO_AUDIO = "E://MEGAsync//projectServ//www//projetos//ia//dev//aira-assistente//audios//"
+CAMINHO_AUDIO = "audios/"
 
 AUDIOS = [ 
     {

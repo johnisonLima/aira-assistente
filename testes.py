@@ -2,7 +2,7 @@ import unittest
 from transcritor import *
 from assistente import *
 
-CAMINHO_AUDIO = "E://MEGAsync//projectServ//www//projetos//ia//dev//aira-assistente//audios//"
+CAMINHO_AUDIO = "audios/"
 
 AMELIA = f"{CAMINHO_AUDIO}amelia.wav"
 ACIONAR_TORRE = f"{CAMINHO_AUDIO}acionar torre de controle.wav"
